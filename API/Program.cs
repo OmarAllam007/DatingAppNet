@@ -12,9 +12,12 @@ builder.Services.AddDbContext<DataContext>(optionsAction => {
 });
 
 
+builder.Services.AddCors();
 
 
 var app = builder.Build();
+
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
 
 app.MapControllers();
 
