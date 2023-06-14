@@ -3,6 +3,8 @@ import {BsDropdownConfig} from 'ngx-bootstrap/dropdown';
 import {AuthService} from "../_services/AuthService";
 import {User} from "../_models/user";
 import {Observable, of} from "rxjs";
+import {Router} from "@angular/router";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-nav',
@@ -11,7 +13,7 @@ import {Observable, of} from "rxjs";
   providers: [{provide: BsDropdownConfig, useValue: {isAnimated: true, autoClose: true}}]
 
 })
-export class NavComponent implements OnInit, OnDestroy{
+export class NavComponent implements OnInit, OnDestroy {
   model = {
     userName: '',
     password: ''
@@ -19,25 +21,24 @@ export class NavComponent implements OnInit, OnDestroy{
 
   // currentUser$:Observable<User | null> = of(null);
 
-  constructor(public authService: AuthService) {
+  constructor(public authService: AuthService, private router: Router,
+              private toastr: ToastrService
+  ) {
 
   }
 
   login() {
     console.log(this.model)
     this.authService.login(this.model).subscribe({
-      next: response => {
-
-      },
-      error: error => {
-        console.log(error);
-      }
+      next: _ => this.router.navigateByUrl('/members'),
+      error: error => this.toastr.error(error.error),
     });
   }
 
 
   logout() {
     this.authService.logout();
+    this.router.navigateByUrl('/');
   }
 
   ngOnInit(): void {
@@ -47,7 +48,6 @@ export class NavComponent implements OnInit, OnDestroy{
   ngOnDestroy(): void {
     this.authService.currentUser$ = of(null);
   }
-
 
 
 }
