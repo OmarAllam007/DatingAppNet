@@ -2,13 +2,14 @@ import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {BehaviorSubject, map} from "rxjs";
 import {User} from "../_models/user";
+import {environment} from "src/environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AuthService {
-  baseUrl = "https://localhost:5001/";
+  baseUrl = environment.apiUrl;
   private currentUserSource = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSource.asObservable();
 
@@ -18,7 +19,7 @@ export class AuthService {
 
 
   login(model: User | any) {
-    return this.httpClient.post<User>(`${this.baseUrl}api/account/login`, model).pipe(
+    return this.httpClient.post<User>(`${this.baseUrl}account/login`, model).pipe(
       map((response:any) =>{
         const user = response;
 
@@ -31,7 +32,7 @@ export class AuthService {
   }
 
   register(model: User | any) {
-    return this.httpClient.post<User>(`${this.baseUrl}api/account/register`, model).pipe(
+    return this.httpClient.post<User>(`${this.baseUrl}account/register`, model).pipe(
       map((response:any) =>{
         const user = response;
 
