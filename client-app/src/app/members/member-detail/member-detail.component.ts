@@ -43,7 +43,6 @@ export class MemberDetailComponent implements OnInit {
         big:image.url,
       })
     }
-
     return imageUrls;
   }
 

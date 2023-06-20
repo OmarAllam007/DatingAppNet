@@ -17,11 +17,14 @@ import {MessagesComponent} from './messages/messages.component';
 import {CommonModule} from "@angular/common";
 import {SharedModule} from "./_modules/shared.module";
 import {ErrorInterceptor} from "./_interceptors/error.interceptor";
-import { NotFoundComponent } from './errors/not-found/not-found.component';
-import { ServerErrorComponent } from './errors/server-error/server-error.component';
-import { MemberCardComponent } from './members/member-card/member-card.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {NotFoundComponent} from './errors/not-found/not-found.component';
+import {ServerErrorComponent} from './errors/server-error/server-error.component';
+import {MemberCardComponent} from './members/member-card/member-card.component';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {JwtInterceptor} from "./_interceptors/jwt.interceptor";
+import {MemberEditComponent} from './members/member-edit/member-edit.component';
+import {NgxSpinnerModule} from "ngx-spinner";
+import {LoadingInterceptor} from "./_interceptors/loading.interceptor";
 
 
 @NgModule({
@@ -36,7 +39,8 @@ import {JwtInterceptor} from "./_interceptors/jwt.interceptor";
     MessagesComponent,
     NotFoundComponent,
     ServerErrorComponent,
-    MemberCardComponent
+    MemberCardComponent,
+    MemberEditComponent
   ],
   imports: [
     CommonModule,
@@ -47,12 +51,14 @@ import {JwtInterceptor} from "./_interceptors/jwt.interceptor";
     HttpClientModule,
     FormsModule,
     BrowserAnimationsModule, // required animations module
-    SharedModule, FontAwesomeModule
+    SharedModule, FontAwesomeModule,
+    NgxSpinnerModule.forRoot({type: 'line-scale'})
 
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true},
   ],
   bootstrap: [AppComponent]
 })
