@@ -6,6 +6,8 @@ import {environment} from "../../../environments/environment";
 import {User} from "../../_models/user";
 import {AuthService} from "../../_services/AuthService";
 import {take} from "rxjs";
+import {MembersService} from "../../_services/members.service";
+import {Photo} from "../../_models/photo";
 
 @Component({
   selector: 'app-photo-editor',
@@ -21,7 +23,7 @@ export class PhotoEditorComponent implements OnInit {
   user: User | undefined;
   response: string = "";
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private memberService: MembersService) {
     this.authService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if (user) {
@@ -33,6 +35,34 @@ export class PhotoEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.initUploader();
+  }
+
+  updateMainImage(photo: Photo) {
+    this.memberService.updateMainImage(photo.id).subscribe({
+      next: () => {
+        if (this.user && this.member) {
+          this.user.photoUrl = photo.url;
+          this.authService.setCurrentUser(this.user);
+
+          this.member.photoUrl = photo.url;
+          this.member.photos.forEach(p => {
+            p.isMain = p.id == photo.id;
+          })
+        }
+      }
+    });
+  }
+
+  removeUserImage(photoId: number) {
+    this.memberService.removeUserImage(photoId).subscribe({
+      next: () => {
+        if (this.member) {
+          this.member.photos =
+            this.member.photos.filter(m => m.id !== photoId)
+        }
+
+      }
+    })
   }
 
   protected readonly faTrash = faTrash;
@@ -48,12 +78,12 @@ export class PhotoEditorComponent implements OnInit {
       maxFileSize: 10 * 1024 * 1024,
     });
 
-    this.uploader.onAfterAddingFile = (file)=>{
+    this.uploader.onAfterAddingFile = (file) => {
       file.withCredentials = false
     }
 
-    this.uploader.onSuccessItem = (item,response,status,headers)=>{
-      if(response){
+    this.uploader.onSuccessItem = (item, response, status, headers) => {
+      if (response) {
         const photo = JSON.parse(response);
         this.member?.photos.push(photo);
       }

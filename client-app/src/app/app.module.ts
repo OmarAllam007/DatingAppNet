@@ -7,7 +7,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NavComponent} from './nav/nav.component';
 import {BsDropdownModule} from 'ngx-bootstrap/dropdown';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HomeComponent} from './home/home.component';
 import {RegisterComponent} from './register/register.component';
 import {MemberListComponent} from './members/member-list/member-list.component';
@@ -45,20 +45,20 @@ import {FileUploadModule} from "ng2-file-upload";
     MemberEditComponent,
     PhotoEditorComponent
   ],
-  imports: [
-    CommonModule,
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
+    imports: [
+        CommonModule,
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
 
-    HttpClientModule,
-    FormsModule,
-    BrowserAnimationsModule, // required animations module
-    SharedModule, FontAwesomeModule,
-    NgxSpinnerModule.forRoot({type: 'line-scale'}),
+        HttpClientModule,
+        FormsModule,
+        BrowserAnimationsModule, // required animations module
+        SharedModule, FontAwesomeModule,
+        NgxSpinnerModule.forRoot({type: 'line-scale'}), ReactiveFormsModule,
 
 
-  ],
+    ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
