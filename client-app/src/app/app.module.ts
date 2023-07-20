@@ -27,6 +27,8 @@ import {NgxSpinnerModule} from "ngx-spinner";
 import {LoadingInterceptor} from "./_interceptors/loading.interceptor";
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 import {FileUploadModule} from "ng2-file-upload";
+import { TextInputComponent } from './_forms/text-input/text-input.component';
+import { DatePickerComponent } from './_forms/date-picker/date-picker.component';
 
 
 @NgModule({
@@ -43,7 +45,9 @@ import {FileUploadModule} from "ng2-file-upload";
     ServerErrorComponent,
     MemberCardComponent,
     MemberEditComponent,
-    PhotoEditorComponent
+    PhotoEditorComponent,
+    TextInputComponent,
+    DatePickerComponent
   ],
     imports: [
         CommonModule,
