@@ -26,7 +26,7 @@
         <img src="{{user.photoUrl}}" alt="user-image" width="50" class="profileImage">
         <button id="button-animated" dropdownToggle type="button" class="btn  dropdown-toggle text-white"
                 aria-controls="dropdown-animated">
-          Welcome, {{user.username.toString() | titlecase}}<span class="caret"></span>
+          Welcome, {{user.knownAs | titlecase}}<span class="caret"></span>
         </button>
         <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu"
             role="menu" aria-labelledby="button-animated">

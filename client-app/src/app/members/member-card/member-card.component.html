@@ -4,16 +4,22 @@
 
     <ul class="list-inline member-icons animate text-center px-1">
       <li class="list-inline-item">
-        <button class="btn btn-primary mx-1" routerLink="/members/{{member.userName}}"><fa-icon [icon]="faUser"></fa-icon></button>
-        <button class="btn btn-primary mx-1"><fa-icon [icon]="faHeart"></fa-icon></button>
-        <button class="btn btn-primary"><fa-icon [icon]="faEnvelope"></fa-icon></button>
+        <button class="btn btn-primary mx-1" routerLink="/members/{{member.userName}}">
+          <fa-icon [icon]="faUser"></fa-icon>
+        </button>
+        <button class="btn btn-primary mx-1">
+          <fa-icon [icon]="faHeart"></fa-icon>
+        </button>
+        <button class="btn btn-primary">
+          <fa-icon [icon]="faEnvelope"></fa-icon>
+        </button>
       </li>
     </ul>
   </div>
   <div class="card-body p-1">
     <h6 class="card-title text-center mb-1">
       <fa-icon [icon]="faUser" class="me-2"></fa-icon>
-      {{member.knownAs}}</h6>
+      {{member.knownAs}}, {{member.age}}</h6>
     <p class="card-text text-muted text-center">{{member.city}}</p>
   </div>
 </div>
