@@ -15,10 +15,10 @@ export class MembersService {
   baseUrl = environment.apiUrl;
   members: Member[] = []
   cachedMembers = new Map();
-  userParams:UserParams | undefined;
-  user:User | undefined;
+  userParams: UserParams | undefined;
+  user: User | undefined;
 
-  constructor(private http: HttpClient, private authService:AuthService) {
+  constructor(private http: HttpClient, private authService: AuthService) {
     this.authService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if (user) {
@@ -29,16 +29,16 @@ export class MembersService {
     })
   }
 
-  getUserParams(){
+  getUserParams() {
     return this.userParams;
   }
 
-  setUserParams(params:UserParams){
+  setUserParams(params: UserParams) {
     this.userParams = params;
   }
 
-  resetFilters(){
-    if(this.user){
+  resetFilters() {
+    if (this.user) {
       this.userParams = new UserParams(this.user);
       return this.userParams;
     }
@@ -46,23 +46,35 @@ export class MembersService {
     return;
   }
 
+  addLike(userId: number) {
+    return this.http.post(this.baseUrl + `likes/${userId}`, {});
+  }
+
+  getLikes(predicate: string, pageNumber: number, pageSize: number) {
+    let params = this.getPaginatedHeader(pageNumber, pageSize);
+    params = params.append('predicate', predicate);
+
+    return this.getPaginatedResults<Member[]>(this.baseUrl + 'likes', params);
+    // this.http.get<Member[]>(this.baseUrl + 'likes?predicate='+predicate);
+  }
+
   getMembers(userParams: UserParams) {
     let key = Object.values(userParams).join('-');
 
     const response = this.cachedMembers.get(key);
 
-    if(response) return of(response);
+    if (response) return of(response);
 
     let params = this.getPaginatedHeader(userParams.pageNumber, userParams.pageSize);
 
-    params = params.append("minAge",userParams.minAge);
-    params = params.append("maxAge",userParams.maxAge);
-    params = params.append("gender",userParams.gender);
-    params = params.append("orderBy",userParams.orderBy);
+    params = params.append("minAge", userParams.minAge);
+    params = params.append("maxAge", userParams.maxAge);
+    params = params.append("gender", userParams.gender);
+    params = params.append("orderBy", userParams.orderBy);
 
     return this.getPaginatedResults<Member[]>(this.baseUrl + 'users', params).pipe(
-      map(response=>{
-        this.cachedMembers.set(key,response);
+      map(response => {
+        this.cachedMembers.set(key, response);
         return response;
       })
     )
@@ -70,8 +82,8 @@ export class MembersService {
 
   getMember(username: string) {
     const member = [...this.cachedMembers.values()]
-      .reduce((prevArray:[],element)=> prevArray.concat(element.result),[])
-      .find((member:Member)=> member.userName === username);
+      .reduce((prevArray: [], element) => prevArray.concat(element.result), [])
+      .find((member: Member) => member.userName === username);
 
     if (member) return of(member);
 
@@ -96,13 +108,11 @@ export class MembersService {
   }
 
 
-
   private getPaginatedResults<T>(url: string, params: HttpParams) {
     const paginatedResult: PaginatedResults<T> = new PaginatedResults<T>();
 
     return this.http.get<T>(url, {observe: "response", params}).pipe(
       map(response => {
-        console.log(response.body)
         if (response.body) {
           paginatedResult.result = response.body;
         }
