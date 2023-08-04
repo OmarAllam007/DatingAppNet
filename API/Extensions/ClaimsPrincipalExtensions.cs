@@ -9,7 +9,7 @@ namespace API.Extensions
             return user.FindFirst(ClaimTypes.Name)?.Value;
         }
         
-        public static int GetUserId(this ClaimsPrincipal user)
+        public static Int32 GetUserId(this ClaimsPrincipal user)
         {
             return Int32.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         }

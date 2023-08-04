@@ -32,7 +32,8 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
-            var currentUser = await _userRepository.GetUserByUsernameAsync(User.GetUserName());
+            var currentUser = await _userRepository.GetUserByIdAsync(User.GetUserId());
+
             userParams.CurrentUsername = currentUser.UserName;
 
             if(string.IsNullOrEmpty(userParams.Gender)){
@@ -49,17 +50,17 @@ namespace API.Controllers
         }
 
 
-        [HttpGet("{username}")]
-        public async Task<ActionResult<MemberDto>> GetUser(string username)
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<MemberDto>> GetUser(int userId)
         {
-            return await _userRepository.GetMemberAsync(username);
+            return await _userRepository.GetMemberAsync(userId);
         }
 
         [HttpPut]
         public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
         {
 
-            var user = await _userRepository.GetUserByUsernameAsync(User.GetUserName());
+            var user = await _userRepository.GetUserByIdAsync(User.GetUserId());
 
             if (user == null) return NotFound();
 
@@ -73,7 +74,8 @@ namespace API.Controllers
         [HttpPost("upload-photo")]
         public async Task<ActionResult<PhotoDto>> UploadPhoto(IFormFile file)
         {
-            var user = await _userRepository.GetUserByUsernameAsync(User.GetUserName());
+            var user = await _userRepository.GetUserByIdAsync(User.GetUserId());
+
 
             if (user == null) return NotFound();
 
@@ -102,7 +104,8 @@ namespace API.Controllers
         [HttpPut("set-main-photo/{photoId}")]
         public async Task<IActionResult> SetMainPhoto(int photoId)
         {
-            var user = await _userRepository.GetUserByUsernameAsync(User.GetUserName());
+            var user = await _userRepository.GetUserByIdAsync(User.GetUserId());
+
 
             if (user == null) return NotFound();
 
@@ -129,7 +132,8 @@ namespace API.Controllers
         [HttpDelete("remove-user-photo/{photoId}")]
         public async Task<IActionResult> DeleteUserPhotoAsync(int photoId)
         {
-            var user = await _userRepository.GetUserByUsernameAsync(User.GetUserName());
+            var user = await _userRepository.GetUserByIdAsync(User.GetUserId());
+
 
             var photo = user.Photos.FirstOrDefault(p => p.Id == photoId);
 
