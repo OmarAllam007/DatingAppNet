@@ -1,13 +1,16 @@
 using API.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
+    // : IdentityDbContext<TUser,TRole,TKey,IdentityUserClaim<TKey>,IdentityUserRole<TKey>,IdentityUserLogin<TKey>,IdentityRoleClaim<TKey>,IdentityUserToken<TKey>>
 namespace API.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<AppUser,AppRole,int,
+        IdentityUserClaim<int>,AppUserRole,IdentityUserLogin<int>,IdentityRoleClaim<int>,IdentityUserToken<int>>
     {
         public DataContext(DbContextOptions options) : base(options)
         {
-
+            
         }
 
         public DbSet<AppUser> Users { get; set; }
@@ -18,9 +21,24 @@ namespace API.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<AppUser>()
+                .HasMany(ur => ur.AppUserRoles)
+                .WithOne(ur => ur.AppUser)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+            
+            
+            modelBuilder.Entity<AppRole>()
+                .HasMany(ro => ro.AppUserRoles)
+                .WithOne(ro => ro.AppRole)
+                .HasForeignKey(ro => ro.RoleId)
+                .IsRequired();
+            
             modelBuilder.Entity<UserLike>()
             .HasKey(l => new { l.SourceUserId, l.TargetUserId });
 
+            
+            
 
             modelBuilder.Entity<UserLike>()
             .HasOne(l => l.SourceUser)

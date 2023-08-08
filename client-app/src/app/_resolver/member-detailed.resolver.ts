@@ -16,6 +16,6 @@ export class MemberDetailedResolver implements Resolve<Member> {
   constructor(private memberService:MembersService) {
   }
   resolve(route: ActivatedRouteSnapshot): Observable<Member> {
-    return this.memberService.getMember(route.paramMap.get('userId')!);
+    return this.memberService.getMember(Number.parseInt(route.paramMap.get('userId')!));
   }
 }

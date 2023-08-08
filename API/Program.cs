@@ -1,7 +1,9 @@
 using API.Data;
 using API.Data.Seeds;
+using API.Entities;
 using API.Extensions;
 using API.Middleware;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,11 @@ builder.Services.AddControllers();
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole",
+        policy => policy.RequireRole("Admin"));
+});
 
 var app = builder.Build();
 
@@ -33,15 +40,16 @@ var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<DataContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
+
     await context.Database.MigrateAsync();
-    await UserSeed.Seed(context);
+    await UserSeed.Seed(userManager, roleManager);
 }
 catch (System.Exception ex)
 {
-
     var _logger = services.GetService<ILogger<Program>>();
     _logger.LogError(ex, "Error while update migrations");
-
 }
 
 app.Run();

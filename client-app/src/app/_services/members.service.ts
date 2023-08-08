@@ -80,14 +80,14 @@ export class MembersService {
     )
   }
 
-  getMember(username: string) {
+  getMember(userId: number) {
     const member = [...this.cachedMembers.values()]
       .reduce((prevArray: [], element) => prevArray.concat(element.result), [])
-      .find((member: Member) => member.userName === username);
+      .find((member: Member) => member.id === userId);
 
     if (member) return of(member);
 
-    return this.http.get<Member>(this.baseUrl + 'users/' + username);
+    return this.http.get<Member>(this.baseUrl + 'users/' + userId);
   }
 
   updateMember(member: Member) {
