@@ -6,6 +6,12 @@
            class="card-img-top img-thumbnail">
 
       <div class="card-body">
+        <div class="mb-2" *ngIf="(presenceService.onlineUsers$ | async)?.includes(member.id.toString())">
+          <span class="text-success">
+            <fa-icon [icon]="faCircleUser"></fa-icon>
+            Online Now
+          </span>
+        </div>
         <div>
           <strong>Age:</strong>
           <p>{{member.age}}</p>
@@ -13,7 +19,7 @@
 
         <div>
           <strong>Last Active:</strong>
-          <p>{{member.lastActive.toString() + 'Z' | timeago }}</p>
+          <p>{{member.lastActive.toString() | timeago }}</p>
         </div>
 
         <div>
@@ -53,7 +59,7 @@
       </tab>
 
       <tab heading="Messages" (selectTab)="onTabSelected($event)">
-        <app-member-messages [messages]="messages" [userId]="member.id"></app-member-messages>
+        <app-member-messages [userId]="member.id"></app-member-messages>
       </tab>
     </tabset>
   </div>

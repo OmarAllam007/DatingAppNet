@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using API.DTOs;
 using API.Entities;
 using API.Helpers;
@@ -42,11 +43,12 @@ public class MessageRepository : IMessageRepository
         {
             "Inbox" => query.Where(m => m.RecipientId == messageParams.UserId && m.RecipientDeleted == false),
             "Sent" => query.Where(m => m.SenderId == messageParams.UserId && m.SenderDeleted == false),
-            _ => query.Where(m => m.RecipientId == messageParams.UserId 
+            _ => query.Where(m => m.RecipientId == messageParams.UserId
                                   && m.RecipientDeleted == false && m.DateRead == null),
         };
 
-        var messages = query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
+        var messages = query
+            .ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
 
         return await PagedList<MessageDto>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
     }
@@ -55,7 +57,6 @@ public class MessageRepository : IMessageRepository
     //lisa,karen
     public async Task<IEnumerable<MessageDto>> GetMessageThread(int currentUserId, int recipientId)
     {
-        
         var messages = await _context.Messages
             .Include(m => m.Recipient).ThenInclude(u => u.Photos)
             .Include(m => m.Sender).ThenInclude(u => u.Photos)
@@ -63,9 +64,8 @@ public class MessageRepository : IMessageRepository
                 m =>
                     m.RecipientId == currentUserId && m.SenderId == recipientId && m.RecipientDeleted == false
                     || m.SenderId == currentUserId && m.RecipientId == recipientId && m.SenderDeleted == false
-                    
-                    
-            ).OrderByDescending(m => m.MessageSent)
+            )
+            // .OrderByDescending(m => m.MessageSent)
             .ToListAsync();
 
         var unreadMessages = messages.Where(m => m.DateRead == null
@@ -86,5 +86,35 @@ public class MessageRepository : IMessageRepository
     public async Task<bool> SaveAllAsync()
     {
         return await _context.SaveChangesAsync() > 0;
+    }
+
+    public void AddGroup(ConnectionGroup group)
+    {
+        _context.ConnectionGroups.Add(group);
+    }
+
+    public void RemoveConnection(Connection connection)
+    {
+        _context.Connections.Remove(connection);
+    }
+
+    public async Task<Connection> GetConnection(string connectionId)
+    {
+        return await _context.Connections.FindAsync(connectionId);
+    }
+
+    public async Task<ConnectionGroup> GetMessageGroup(string groupName)
+    {
+        return await _context.ConnectionGroups
+            .Include(x => x.Connections)
+            .FirstOrDefaultAsync(x => x.Name == groupName);
+    }
+
+    public async Task<ConnectionGroup> GetGroupForConnection(string connectionId)
+    {
+        return await _context.ConnectionGroups
+            .Include(cg => cg.Connections)
+            .Where(x => x.Connections.Any(c => c.ConnectionId == connectionId))
+            .FirstOrDefaultAsync();
     }
 }
