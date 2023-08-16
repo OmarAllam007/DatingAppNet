@@ -13,8 +13,7 @@ public interface IMessageRepository
 
     Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams);
     Task<IEnumerable<MessageDto>> GetMessageThread(int currentUserId, int recipientId);
-
-    Task<bool> SaveAllAsync();
+    
 
     void AddGroup(ConnectionGroup group);
     void RemoveConnection(Connection connection);
