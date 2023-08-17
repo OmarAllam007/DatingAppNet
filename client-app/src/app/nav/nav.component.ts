@@ -41,7 +41,9 @@ export class NavComponent implements OnInit, OnDestroy {
             }
           }
         })
+
         this.router.navigateByUrl('/members');
+        this.model = {userName: '', password: ''};
 
       },
       error: error => this.toastr.error(error.error),

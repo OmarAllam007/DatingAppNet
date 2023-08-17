@@ -1,10 +1,10 @@
-import {AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {Message} from "../../_models/message";
+import {ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {MessageService} from "../../_services/message.service";
 import {faClock, faEnvelopeOpen} from "@fortawesome/free-solid-svg-icons";
 import {NgForm} from "@angular/forms";
 
 @Component({
+  changeDetection:ChangeDetectionStrategy.OnPush,
   selector: 'app-member-messages',
   templateUrl: './member-messages.component.html',
   styleUrls: ['./member-messages.component.css']
